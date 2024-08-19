@@ -40,8 +40,6 @@ async function seedTable() {
     //Pokemon in form name : type
     const JSONData = {
         'Bulbasaur' : 'Grass',
-        'Charmander': 'Fire',
-        'Squirtle': 'Water'
     }
 
     const queryString = format("INSERT INTO seed_practice_table (name, type, jsonObj) VALUES (%L, %L, %L)", Object.keys(JSONData)[0], JSONData.Charmander, JSONData)
@@ -49,11 +47,30 @@ async function seedTable() {
     await pool.query(queryString)
     console.log((await pool.query('SELECT * FROM seed_practice_table')).rows)
 
+
+    //Now again, only using loops to add all
+    await dropTable()
+    await createTable()
+    await pool.query('ALTER TABLE seed_practice_table ADD type VARCHAR(50), ADD jsonObj JSON')
+
+    const JSONDataForLoop = {
+        'Bulbasaur' : 'Grass',
+        'Charmander': 'Fire',
+        'Squirtle': 'Water'
+    }
+
+    for (pokemon in JSONDataForLoop)
+    {
+        const queryString = format("INSERT INTO seed_practice_table (name, type, jsonObj) VALUES (%L, %L, %L)", pokemon, JSONDataForLoop[pokemon], JSONDataForLoop)
+        await pool.query(queryString)
+    }
+
+    console.log((await pool.query('SELECT * FROM seed_practice_table')).rows)
+
+    //Alternate way, to update the table using queries directly with a JSON already in the table
     //await pool.query("UPDATE seed_practice_table SET type = jsonobj -> 'Bulbasaur' WHERE id = 1")
     //console.log((await pool.query('SELECT * FROM seed_practice_table')).rows)
-
-
-    pool.end()
 }
 
-seedTable()
+await seedTable()
+pool.end()
