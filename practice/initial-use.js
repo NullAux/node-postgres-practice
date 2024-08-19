@@ -33,3 +33,31 @@ pool.connect()
     console.log(result)
     client.release()
 })
+
+//Now, let's start working with tables
+pool.connect()
+.then((client) => {
+    client.query('DROP TABLE IF EXISTS my_first_table')
+    client.query('CREATE TABLE my_first_table (country_id SERIAL PRIMARY KEY, name VARCHAR(20), capital VARCHAR(20))')
+    client.query('INSERT INTO my_first_table (name, capital) VALUES (\'France\', \'Paris\'), (\'Germany\', \'Berlin\'), (\'Portgual\', \'Lisbon\')')
+    result = client.query('SELECT * FROM my_first_table')
+    return Promise.all([result, client])
+})
+.then(([result, client]) => {
+    console.log(result.rows)
+    client.release()
+})
+
+//Finally, let's set up the suggested code structure from the docs (see https://node-postgres.com/guides/project-structure)
+const query = (text, params, callback) => 
+{
+    //diagnostic info
+    return pool.query(text, params, callback)
+}
+
+const getClient = () => 
+{
+    return pool.connect()
+}
+
+module.exports = {query, getClient}
