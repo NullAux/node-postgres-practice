@@ -39,7 +39,7 @@ pool.connect()
 .then((client) => {
     client.query('DROP TABLE IF EXISTS my_first_table')
     client.query('CREATE TABLE my_first_table (country_id SERIAL PRIMARY KEY, name VARCHAR(20), capital VARCHAR(20))')
-    client.query('INSERT INTO my_first_table (name, capital) VALUES (\'France\', \'Paris\'), (\'Germany\', \'Berlin\'), (\'Portgual\', \'Lisbon\')')
+    client.query('INSERT INTO my_first_table (name, capital) VALUES (\'France\', \'Paris\'), (\'Germany\', \'Berlin\'), (\'Portugal\', \'Lisbon\')')
     result = client.query('SELECT * FROM my_first_table')
     return Promise.all([result, client])
 })
